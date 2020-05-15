@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form
+    xmlns:xf="http://www.w3.org/2002/xforms"
+    xmlns:ev="http://www.w3.org/2001/xml-events">
+    <xf:group
+        ref="alm:header">
+        <xf:input
+            ref="alm:unitid">
+            <xf:label>Cote</xf:label>
+        </xf:input>
+        <xf:input
+            ref="alm:unitid">
+            <xf:label>Cote(dir)</xf:label>
+        </xf:input>
+    </xf:group>
+    <xf:group
+        ref="alm:content">
+        <xf:label>Contenu</xf:label>
+        <xf:repeat
+            id="repeatSection"
+            nodeset="alm:section">
+            <xf:input
+                ref="alm:head">
+                <xf:label>Titre de la section</xf:label>
+            </xf:input>
+            <xf:repeat
+                id="repeatSectionContent"
+                nodeset="*[not(local-name() = 'head')]">
+                <xf:textarea
+                    ref="self::node()[local-name() = 'p']">
+                    <xf:label>Texte</xf:label>
+                </xf:textarea>
+                <xf:group
+                    ref="self::node()[local-name() = 'listEntry']">
+                    <xf:label>Liste</xf:label>
+                    <xf:input
+                        ref="alm:head">
+                        <xf:label>Intitulé</xf:label>
+                    </xf:input>
+                    <xf:repeat
+                        id="reapeatEntry"
+                        nodeset="alm:entry">
+                        <xf:label>Entrée</xf:label>
+                        <xf:input
+                            ref="alm:name">
+                            <xf:label>Nom</xf:label>
+                        </xf:input>
+                        <xf:input
+                            ref="alm:address">
+                            <xf:label>Adresse</xf:label>
+                        </xf:input>
+                        <xf:select1
+                            ref="@href">
+                            <xf:itemset
+                                nodeset="instance('xprEntities')/xpr:entity[@type = 'expert']">
+                                <xf:label
+                                    ref="xpr:label"/>
+                                <xf:value
+                                    ref="@xml:id"/>
+                            </xf:itemset>
+                        </xf:select1>
+                        <xf:trigger
+                            class="delete">
+                            <xf:label>Supprimer cette entrée</xf:label>
+                            <xf:delete
+                                nodeset="."
+                                if="count(parent::alm:listEntry/alm:entry) &gt; 1"
+                                ev:event="DOMActivate"/>
+                            <xf:help>Supprime une entrée</xf:help>
+                        </xf:trigger>
+                    </xf:repeat>
+                    <xf:trigger>
+                        <xf:label>Ajouter une entrée</xf:label>
+                        <xf:insert
+                                context="."
+                                origin="instance('almanakCopy')/alm:content/alm:section/alm:listEntry/alm:entry"
+                                nodeset="*"
+                                at="index('repeatEntry')"
+                                position="after"
+                                ev:event="DOMActivate"/>
+                        <xf:help>Ajoute une entrée</xf:help>
+                    </xf:trigger>
+                </xf:group>
+                <xf:trigger
+                    class="delete">
+                    <xf:label>
+                        <xf:output
+                            value="choose(self::node()[local-name() = 'p'], 'Supprimer ce texte', 'Supprimer cette liste')"/>
+                    </xf:label>
+                    <xf:delete
+                        nodeset="."
+                        ev:event="DOMActivate"/>
+                </xf:trigger>
+            </xf:repeat>
+            <xf:trigger>
+                <xf:label>Ajouter un texte</xf:label>
+                    <xf:insert
+                        context="."
+                        origin="instance('almanakCopy')/alm:content/alm:section/alm:p"
+                        nodeset="alm:p | alm:listEntry"
+                        at="index('repeatSectionContent')"
+                        position="after"
+                        ev:event="DOMActivate"/>
+                <xf:help>Ajoute un texte</xf:help>
+            </xf:trigger>
+            <xf:trigger>
+                <xf:label>Ajouter une liste</xf:label>
+                    <xf:insert
+                        context="."
+                        origin="instance('almanakCopy')/alm:content/alm:section/alm:listEntry"
+                        nodeset="alm:p | alm:listEntry"
+                        at="index('repeatSectionContent')"
+                        position="after"
+                        ev:event="DOMActivate"/>
+                
+                <xf:help>Ajoute une liste</xf:help>
+            </xf:trigger>
+            <xf:trigger
+                class="delete">
+                <xf:label>Supprimer cette section</xf:label>
+                <xf:delete
+                    nodeset="."
+                    if="count(parent::alm:content/alm:section) &gt; 1"
+                    ev:event="DOMActivate"/>
+                <xf:help>Supprime une section</xf:help>
+            </xf:trigger>
+        </xf:repeat>
+        <xf:trigger
+            class="insert">
+            <xf:label>Ajouter une section</xf:label>
+            
+                <xf:insert
+                    context="."
+                    origin="instance('almanakCopy')/alm:content/alm:section"
+                    nodeset="*"
+                    at="index('repeatSection')"
+                    position="after"
+                    ev:event="DOMActivate"/>
+            
+            <xf:help>Ajoute une section</xf:help>
+        </xf:trigger>
+        <xf:var
+            name="message"
+            value="'ma variable'"/>
+        <xf:trigger>
+            <xf:label>toto</xf:label>
+            <xf:message
+                ev:event="DOMActivate"
+                value="$message"/>
+        </xf:trigger>
+    </xf:group>
+</form>

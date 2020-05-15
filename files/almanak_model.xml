@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xf:model
+    id="almanakModel"
+    xmlns:xf="http://www.w3.org/2002/xforms"
+    xmlns:ev="http://www.w3.org/2001/xml-events">
+    <xf:instance
+        id="almanak"
+        src="/almanak/files/almanak_instance.xml"/>
+    <xf:instance
+        id="almanakCopy"
+        src="/almanak/files/almanak_instance.xml"/>
+    <xf:instance
+        id="xprEntities"
+        src="/xpr/entities"/>
+    <xf:instance
+        id="message">
+        <message
+            xmlns="">ma variable</message>
+    </xf:instance>
+</xf:model>

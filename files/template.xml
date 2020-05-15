@@ -1,0 +1,39 @@
+<html
+  lang="fr"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ev="http://www.w3.org/2001/xml-events"
+  xmlns:xf="http://www.w3.org/2002/xforms"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:alm="alm"
+  alm:bogus="fix Firefox namespace issue"
+  xmlns:xpr="xpr"
+  xpr:bogus="fix Firefox namespace issue">
+  <head>
+    <title>Directory</title>
+    <meta
+      charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="" />
+    <!--<script 
+      type="text/javascript" 
+      src="files/xsltforms/xsltforms.js">/**/</script>-->
+    <instance>{model}</instance>
+  </head>
+  <body>
+    <nav
+      id="navigation">
+      <ul>
+        <li><a
+            href="/directory">¡Directory!</a></li>
+      </ul>
+    </nav>
+    <!--<trigger>{trigger}</trigger>-->
+    <main>
+      <form>{form}</form>
+    </main>
+  </body>
+</html>
