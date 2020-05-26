@@ -18,9 +18,7 @@
     <meta
       name="description"
       content="" />
-    <!--<script 
-      type="text/javascript" 
-      src="files/xsltforms/xsltforms.js">/**/</script>-->
+    <link type="text/css" href="/almanak/files/css/main.css" rel="stylesheet"/>
     <instance>{model}</instance>
   </head>
   <body>

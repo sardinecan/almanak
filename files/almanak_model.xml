@@ -12,9 +12,6 @@
     <xf:instance
         id="xprEntities"
         src="/xpr/entities"/>
-    <xf:instance
-        id="message">
-        <message
-            xmlns="">ma variable</message>
-    </xf:instance>
+
+    <xf:bind nodeset="instance('almanak')/alm:header/alm:unitid" required="true()"/>
 </xf:model>

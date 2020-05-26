@@ -1,0 +1,72 @@
+main {
+    width: 70em;
+    margin: auto;
+}
+
+xforms-group[xf-bound] {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 1em;
+    width: 100%;
+}
+
+xforms-group[xf-bound]>xforms-label {
+    grid-column: 1 / span 4;
+
+}
+
+xforms-group>xforms-body {
+    display: none;
+}
+
+xforms-input[xf-bound], xforms-textarea[xf-bound] {
+    display: inline-grid !important;
+    grid-template-columns: fit-content(300px) fit-content(1em) 1fr;
+    grid-template-areas:
+            "l r h"
+            "b b b"
+            "a a a";
+}
+
+
+xforms-textarea[xf-bound] {
+    grid-column: 1 / span 4;
+}
+
+xforms-input[xf-bound]>xforms-label,
+xforms-textarea>xforms-label {
+    grid-area: l;
+}
+
+xforms-input[xf-bound]>xforms-help-mark,
+xforms-textarea[xf-bound]>xforms-help-mark {
+    grid-area: h;
+}
+
+xforms-input[xf-bound]>xforms-alert-mark,
+xforms-textarea[xf-bound]>xforms-alert-mark {
+    grid-area: a;
+}
+
+xforms-input[xf-bound]>xforms-required,
+xforms-textarea[xf-bound]>xforms-required {
+    grid-area: r;
+}
+
+xforms-input[xf-bound]>xforms-body,
+xforms-textarea[xf-bound]>xforms-body {
+    grid-area: b;
+}
+
+xforms-repeat {
+    display: grid !important;
+    grid-column: 1 / span 4;
+    grid-template-columns: repeat(3, 1fr);
+
+}
+
+xforms-repeat-item {
+    display: grid !important;
+    grid-column: 1 / span 4;
+    grid-template-columns: repeat(3, 1fr);
+}

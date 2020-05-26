@@ -4,13 +4,12 @@
     xmlns:ev="http://www.w3.org/2001/xml-events">
     <xf:group
         ref="alm:header">
+        <xf:label>Description de la source</xf:label>
         <xf:input
             ref="alm:unitid">
             <xf:label>Cote</xf:label>
-        </xf:input>
-        <xf:input
-            ref="alm:unitid">
-            <xf:label>Cote(dir)</xf:label>
+            <xf:help>Cote complete de la source.</xf:help>
+            <xf:alert>Le champ "Cote" est requis.</xf:alert>
         </xf:input>
     </xf:group>
     <xf:group
@@ -136,17 +135,7 @@
                     at="index('repeatSection')"
                     position="after"
                     ev:event="DOMActivate"/>
-            
             <xf:help>Ajoute une section</xf:help>
-        </xf:trigger>
-        <xf:var
-            name="message"
-            value="'ma variable'"/>
-        <xf:trigger>
-            <xf:label>toto</xf:label>
-            <xf:message
-                ev:event="DOMActivate"
-                value="$message"/>
         </xf:trigger>
     </xf:group>
 </form>
