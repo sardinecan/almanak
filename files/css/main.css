@@ -6,12 +6,25 @@ main {
 xforms-group[xf-bound] {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr);
+    grid-column: 1 / 4;
     column-gap: 1em;
+    row-gap: 1em;
     width: 100%;
+    margin-bottom: 2em;
 }
 
-xforms-group[xf-bound]>xforms-label {
-    grid-column: 1 / span 4;
+xforms-group[xf-bound]:after {
+    content: " ";
+    grid-column: 1 / 4;
+    border-bottom: 0.1rem solid;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+    width: 10em;
+}
+
+xforms-group[xf-bound]>xforms-label,
+xforms-repeat[xf-bound]>xforms-repeat-item>xforms-label {
+    grid-column: 1 / 4;
 
 }
 
@@ -19,8 +32,10 @@ xforms-group>xforms-body {
     display: none;
 }
 
-xforms-input[xf-bound], xforms-textarea[xf-bound] {
-    display: inline-grid !important;
+xforms-input[xf-bound],
+xforms-textarea[xf-bound],
+xforms-select1[xf-bound]{
+    display: grid !important;
     grid-template-columns: fit-content(300px) fit-content(1em) 1fr;
     grid-template-areas:
             "l r h"
@@ -28,45 +43,61 @@ xforms-input[xf-bound], xforms-textarea[xf-bound] {
             "a a a";
 }
 
-
 xforms-textarea[xf-bound] {
-    grid-column: 1 / span 4;
+    grid-column: 1 / 4;
 }
 
 xforms-input[xf-bound]>xforms-label,
-xforms-textarea>xforms-label {
+xforms-textarea[xf-bound]>xforms-label,
+xforms-select1[xf-bound]>xforms-label {
     grid-area: l;
 }
 
 xforms-input[xf-bound]>xforms-help-mark,
-xforms-textarea[xf-bound]>xforms-help-mark {
+xforms-textarea[xf-bound]>xforms-help-mark,
+xforms-select1[xf-bound]>xforms-help-mark {
     grid-area: h;
 }
 
 xforms-input[xf-bound]>xforms-alert-mark,
-xforms-textarea[xf-bound]>xforms-alert-mark {
+xforms-textarea[xf-bound]>xforms-alert-mark,
+xforms-select1[xf-bound]>xforms-alert-mark {
     grid-area: a;
 }
 
 xforms-input[xf-bound]>xforms-required,
-xforms-textarea[xf-bound]>xforms-required {
+xforms-textarea[xf-bound]>xforms-required,
+xforms-select1[xf-bound]>xforms-required {
     grid-area: r;
 }
 
 xforms-input[xf-bound]>xforms-body,
-xforms-textarea[xf-bound]>xforms-body {
+xforms-textarea[xf-bound]>xforms-body,
+xforms-select1[xf-bound]>xforms-body {
     grid-area: b;
+}
+
+input,
+select {
+    width: 100%;
+}
+
+textarea {
+    width: 100%;
+    height: 5em;
+
 }
 
 xforms-repeat {
     display: grid !important;
-    grid-column: 1 / span 4;
+    grid-column: 1 / 4;
     grid-template-columns: repeat(3, 1fr);
-
 }
 
 xforms-repeat-item {
     display: grid !important;
-    grid-column: 1 / span 4;
+    grid-column: 1 / 4;
+    column-gap: 1em;
+    row-gap: 1em;
     grid-template-columns: repeat(3, 1fr);
 }

@@ -50,6 +50,7 @@
                         </xf:input>
                         <xf:select1
                             ref="@href">
+                            <xf:label>Entrée liée</xf:label>
                             <xf:itemset
                                 nodeset="instance('xprEntities')/xpr:entity[@type = 'expert']">
                                 <xf:label
