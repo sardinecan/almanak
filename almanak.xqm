@@ -63,7 +63,7 @@ function install() {
      )
     else (
       update:output("La base a été créée"),
-      db:create( "almanak", <almanak xmlns='alm'/>, "almanak.xml", map {"chop" : fn:false()} )
+      db:create( "almanak", <alm xmlns='alm'/>, "almanak.xml", map {"chop" : fn:false()} )
       )
 };
 
@@ -114,6 +114,71 @@ function new() {
     <?css-conversion no?>,
     wrapper($content, $outputParam)
     )
+};
+
+(:~
+ : This function creates new almanak
+ : @param $param content to insert in the database
+ : @param $refere the callback url
+ : @return update the database with an updated content and an 200 http
+ : @bug change unitid and @xml:id doesn't work ?
+ :)
+declare
+  %rest:path("almanak/put")
+  %output:method("xml")
+  %rest:header-param("Referer", "{$referer}", "none")
+  %rest:PUT("{$param}")
+  %updating
+function putAlmanak($param, $referer) {
+  let $db := db:open("almanak")
+  return
+    if (fn:ends-with($referer, 'modify'))
+    then
+      let $location := fn:analyze-string($referer, 'almanak/(.+?)/modify')//fn:group[@nr='1']
+      let $id := fn:replace(fn:lower-case($param/almanak/header/unitid), '/', '-')
+      return (
+        replace node $db/alm/almanak[@xml:id = $location] with $param,
+        update:output(
+         (
+          <rest:response>
+            <http:response status="200" message="test">
+              <http:header name="Content-Language" value="fr"/>
+              <http:header name="Content-Type" value="text/plain; charset=utf-8"/>
+            </http:response>
+          </rest:response>,
+          <result>
+            <id>{$id}</id>
+            <message>La ressource a été modifiée.</message>
+            <url></url>
+          </result>
+         )
+        )
+      )
+    else
+      let $id := fn:replace(fn:lower-case($param/almanak/header/unitid), '/', '-')
+      let $param :=
+        copy $d := $param
+        modify (
+          insert node attribute xml:id {$id} into $d/*
+        )
+        return $d
+      return (
+        insert node $param into $db/alm,
+        update:output(
+         (
+          <rest:response>
+            <http:response status="200" message="test">
+              <http:header name="Content-Language" value="fr"/>
+            </http:response>
+          </rest:response>,
+          <result>
+            <id>{$id}</id>
+            <message>La ressource a été créée.</message>
+            <url></url>
+          </result>
+         )
+        )
+      )
 };
 
 (:~

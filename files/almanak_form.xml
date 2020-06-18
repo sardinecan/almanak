@@ -3,6 +3,14 @@
     xmlns:xf="http://www.w3.org/2002/xforms"
     xmlns:ev="http://www.w3.org/2001/xml-events">
     <xf:group
+        ref="/alm:almanak">
+        <xf:input
+                ref="@href">
+            <xf:label>Référence</xf:label>
+            <xf:help>Lien vers la ressource numérique.</xf:help>
+        </xf:input>
+    </xf:group>
+    <xf:group
         ref="alm:header">
         <xf:label>Description de la source</xf:label>
         <xf:input
@@ -10,6 +18,11 @@
             <xf:label>Cote</xf:label>
             <xf:help>Cote complete de la source.</xf:help>
             <xf:alert>Le champ "Cote" est requis.</xf:alert>
+        </xf:input>
+        <xf:input
+                ref="alm:docDate">
+            <xf:label>Date du document</xf:label>
+            <xf:help>Date du document</xf:help>
         </xf:input>
     </xf:group>
     <xf:group
@@ -47,6 +60,10 @@
                         <xf:input
                             ref="alm:address">
                             <xf:label>Adresse</xf:label>
+                        </xf:input>
+                        <xf:input
+                                ref="alm:status">
+                            <xf:label>État</xf:label>
                         </xf:input>
                         <xf:select1
                             ref="@href">
@@ -139,4 +156,8 @@
             <xf:help>Ajoute une section</xf:help>
         </xf:trigger>
     </xf:group>
+    <xf:submit
+            submission="submitAlmanak">
+        <xf:label>Enregistrer</xf:label>
+    </xf:submit>
 </form>

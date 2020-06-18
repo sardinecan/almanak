@@ -14,4 +14,33 @@
         src="/xpr/entities"/>
 
     <xf:bind nodeset="instance('almanak')/alm:header/alm:unitid" required="true()"/>
+    <xf:submission
+            mode="synchronous"
+            id="submitAlmanak"
+            resource="/almanak/put"
+            method="put"
+            replace="none">
+        <xf:action
+                ev:event="xforms-submit-done">
+            <xf:message
+                    level="modal">La ressource a été enregistrée ! Status : <xf:output
+                    value="event('response-status-code')"/> ; URI : <xf:output
+                    value="event('resource-uri')"/> ; Headers : <xf:output
+                    value="event('response-headers')"/> ; Reason : <xf:output
+                    value="event('response-reason-phrase')"/> ; Body : <xf:output
+                    value="event('response-body')"/>.</xf:message>
+        </xf:action>
+        <xf:action
+                ev:event="xforms-submit-error">
+            <xf:message
+                    level="modal">Une erreur est apparue : <xf:output
+                    value="event('error-type')"/> ; Status : <xf:output
+                    value="event('response-status-code')"/> ; URI : <xf:output
+                    value="event('resource-uri')"/> ; Headers : <xf:output
+                    value="event('response-headers')"/> ; Reason : <xf:output
+                    value="event('response-reason-phrase')"/> Body : <xf:output
+                    value="event('response-body')"/>.</xf:message>
+        </xf:action>
+    </xf:submission>
+
 </xf:model>
