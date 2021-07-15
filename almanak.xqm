@@ -70,7 +70,7 @@ function install() {
       update:output("La base a été créée"),
       db:create(
           'almanak',
-          '/sites/expertdb/resource/data/almanak/almanak.xml',
+          '/Volumes/data/github/experts/xprdata/almanak/almanak.xml',
           'almanak.xml',
           map{
             'ftindex': fn:true(),
