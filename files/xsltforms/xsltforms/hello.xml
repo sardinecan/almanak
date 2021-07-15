@@ -1,0 +1,157 @@
+<?xml-stylesheet href="xsltforms.xsl" type="text/xsl"?>
+<html 
+   xmlns="http://www.w3.org/1999/xhtml" 
+   xmlns:xf="http://www.w3.org/2002/xforms"
+   xmlns:tei="http://www.tei-c.org/ns/1.0"
+   xmlns:ev="http://www.w3.org/2001/xml-events"
+   tei:bogus="fix Firefox namespace issue"
+   xmlns:xpr="xpr"
+   xpr:bogus="fix Firefox namespace issue"
+   lang="en">
+   <head>
+      <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover"/>
+      <title>Hello World in XForms</title>
+      <xf:model>
+         <xf:instance id="a">
+            <TEI xmlns="">
+               <teiHeader>
+                  <fileDesc>
+                     <titleStmt>
+                        <title/>
+                     </titleStmt>
+                     <publicationStmt>
+                        <p/>
+                     </publicationStmt>
+                     <sourceDesc>
+                        <msDesc>
+                           <msIdentifier>
+                              <country/>
+                              <settlement/>
+                              <repository/>
+                              <idno/>
+                           </msIdentifier>
+                        </msDesc>
+                     </sourceDesc>
+                  </fileDesc>
+                  <revisionDesc>
+                     <change>
+                        <persName/>
+                        <p/>
+                     </change>
+                  </revisionDesc>
+               </teiHeader>
+               <facsimile>
+                  <graphic url=""><desc/></graphic>
+               </facsimile>
+               <text>
+                  <body>
+                     <div>
+                        <div>
+                           <head/>
+                           <list>
+                              <head/>
+                              <item>
+                                 <date when=""/>
+                                 <persName ref=""/>
+                                 <seg type="address"/>
+                                 <seg type="status"/>
+                              </item>
+                           </list>
+                           <p/>
+                        </div>
+                     </div>
+                  </body>
+               </text>
+            </TEI>
+         </xf:instance>
+         <xf:instance id="almanakCopy">
+            <TEI xmlns="">
+               <teiHeader>
+                  <fileDesc>
+                     <titleStmt>
+                        <title/>
+                     </titleStmt>
+                     <publicationStmt>
+                        <p/>
+                     </publicationStmt>
+                     <sourceDesc>
+                        <msDesc>
+                           <msIdentifier>
+                              <country/>
+                              <settlement/>
+                              <repository/>
+                              <idno/>
+                           </msIdentifier>
+                        </msDesc>
+                     </sourceDesc>
+                  </fileDesc>
+                  <revisionDesc>
+                     <change>
+                        <persName/>
+                        <p/>
+                     </change>
+                  </revisionDesc>
+               </teiHeader>
+               <facsimile>
+                  <graphic url=""><desc/></graphic>
+               </facsimile>
+               <text>
+                  <body>
+                     <div>
+                        <div>
+                           <head/>
+                           <list>
+                              <head/>
+                              <item>
+                                 <date when=""/>
+                                 <persName ref=""/>
+                                 <seg type="address"/>
+                                 <seg type="status"/>
+                              </item>
+                           </list>
+                           <p/>
+                        </div>
+                     </div>
+                  </body>
+               </text>
+            </TEI>
+         </xf:instance>
+         <xf:instance
+            id="xprEntities"
+            src="/xpr/entities"/>
+      </xf:model>
+   </head>
+   <body>
+      <p>
+         <xf:repeat nodeset="//list">
+            <xf:input ref="head">
+               <xf:label>Titre de la liste</xf:label>
+            </xf:input>
+            <xf:repeat nodeset="item">
+               <xf:input ref="date">
+                  <xf:label>Date</xf:label>
+               </xf:input>
+               <xf:input ref="persName">
+                  <xf:label>Nom</xf:label>
+               </xf:input>
+               <xf:select1 ref="persName/@ref">
+                  <xf:label>Expert</xf:label>
+                  <xf:itemset nodeset="instance('xprEntities')/xpr:entity[@type = 'expert']">
+                     <xf:label ref="xpr:label"/>
+                     <xf:value ref="@xml:id"/>
+                  </xf:itemset>
+               </xf:select1>
+            </xf:repeat>
+            <xf:trigger>
+               <xf:label>Ajouter une entrée</xf:label>
+               <xf:insert context="."
+                  origin="instance('almanakCopy')//item"
+                  nodeset="item[index('repeatItem')]"
+                  position="after"
+                  ev:event="DOMActivate"/>
+               <xf:help>Ajoute une entrée</xf:help>
+            </xf:trigger>
+         </xf:repeat>
+      </p>
+   </body>
+</html>

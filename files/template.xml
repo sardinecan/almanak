@@ -4,8 +4,8 @@
   xmlns:ev="http://www.w3.org/2001/xml-events"
   xmlns:xf="http://www.w3.org/2002/xforms"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:alm="alm"
-  alm:bogus="fix Firefox namespace issue"
+  xmlns:tei="http://www.tei-c.org/ns/1.0"
+  tei:bogus="fix Firefox namespace issue"
   xmlns:xpr="xpr"
   xpr:bogus="fix Firefox namespace issue">
   <head>
@@ -18,7 +18,8 @@
     <meta
       name="description"
       content="" />
-    <link type="text/css" href="/almanak/files/css/main.css" rel="stylesheet"/>
+    <!--<link type="text/css" href="/almanak/files/css/main.css" rel="stylesheet"/>
+    <script src="/almanak/files/xsltforms/xsltforms/xsltforms.js">/**/</script>-->
     <instance>{model}</instance>
   </head>
   <body>

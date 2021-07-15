@@ -2,142 +2,149 @@
 <form
     xmlns:xf="http://www.w3.org/2002/xforms"
     xmlns:ev="http://www.w3.org/2001/xml-events">
-    <xf:group
-        ref="/alm:almanak">
-        <xf:input
-                ref="@href">
-            <xf:label>Référence</xf:label>
-            <xf:help>Lien vers la ressource numérique.</xf:help>
-        </xf:input>
+    <xf:group>
+        <xf:label>Récupération almanach</xf:label>
+        <xf:select1 ref="instance('almanakGetData')">
+            <xf:label>Année</xf:label>
+            <xf:itemset nodeset="instance('almanakList')//tei:TEI[@xml:id]">
+                <xf:label ref="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title"/>
+                <xf:value value="@xml:id"/>
+            </xf:itemset>
+        </xf:select1>
+        <xf:submit submission="submitGetData">
+            <xf:label>Get Almanak</xf:label>
+        </xf:submit>
     </xf:group>
-    <xf:group
-        ref="alm:header">
-        <xf:label>Description de la source</xf:label>
-        <xf:input
-            ref="alm:unitid">
-            <xf:label>Cote</xf:label>
-            <xf:help>Cote complete de la source.</xf:help>
-            <xf:alert>Le champ "Cote" est requis.</xf:alert>
-        </xf:input>
-        <xf:input
-                ref="alm:docDate">
-            <xf:label>Date du document</xf:label>
-            <xf:help>Date du document</xf:help>
-        </xf:input>
+    <xf:group ref="tei:teiHeader">
+        <xf:label>Métadonnées</xf:label>
+        <xf:group ref="tei:fileDesc">
+            <xf:group ref="tei:titleStmt">
+                <xf:label>Mentions de titre</xf:label>
+                <xf:input
+                    ref="tei:title">
+                    <xf:label>Titre</xf:label>
+                    <xf:help>Titre de l'almanach</xf:help>
+                </xf:input>
+            </xf:group>
+            <xf:group ref="tei:sourceDesc">
+                <xf:label>Description de la source</xf:label>
+                <xf:input
+                    ref="tei:msDesc/tei:msIdentifier/tei:country">
+                    <xf:label>Pays</xf:label>
+                </xf:input>
+                <xf:input
+                    ref="tei:msDesc/tei:msIdentifier/tei:settlement">
+                    <xf:label>Ville</xf:label>
+                </xf:input>
+                <xf:input
+                    ref="tei:msDesc/tei:msIdentifier/tei:repository">
+                    <xf:label>Lieu de conservation</xf:label>
+                </xf:input>
+                <xf:input
+                    ref="tei:msDesc/tei:msIdentifier/tei:idno">
+                    <xf:label>cote</xf:label>
+                </xf:input>
+            </xf:group>
+        </xf:group>
     </xf:group>
-    <xf:group
-        ref="alm:content">
-        <xf:label>Contenu</xf:label>
-        <xf:repeat
-            id="repeatSection"
-            nodeset="alm:section">
-            <xf:input
-                ref="alm:head">
+    <xf:group ref="tei:facsimile">
+        <xf:label>Fac-similés numériques</xf:label>
+        <xf:repeat nodeset="tei:graphic">
+            <xf:input ref="@url">
+                <xf:label>Url</xf:label>
+            </xf:input>
+            <xf:input ref="tei:desc">
+                <xf:label>Description</xf:label>
+            </xf:input>
+            <a href="{@url}" target="_blank"><xf:output value="tei:desc"/></a>
+            <xf:trigger>
+                <xf:label>Supprimer un facsimile</xf:label>
+                <xf:delete ev:event="DOMActivate"
+                           nodeset="."
+                           if="count(ancestor::tei:facsimile/tei:graphic) > 1"/>
+            </xf:trigger>
+        </xf:repeat>
+        <xf:trigger>
+            <xf:label>Ajouter un facsimile</xf:label>
+            <xf:insert ev:event="DOMActivate"
+                       context="."
+                       origin="instance('almanakCopy')//tei:facsimile/tei:graphic"
+                       nodeset="tei:graphic"
+                       at="last()"
+                       position="after"/>
+        </xf:trigger>
+    </xf:group>
+    <xf:group ref="tei:text/tei:body/tei:div">
+        <xf:label>Transcription</xf:label>
+        <xf:repeat id="repeatSection" nodeset="tei:div[@type='section']">
+            <xf:input ref="tei:head">
                 <xf:label>Titre de la section</xf:label>
             </xf:input>
-            <xf:repeat
-                id="repeatSectionContent"
-                nodeset="*[not(local-name() = 'head')]">
-                <xf:textarea
-                    ref="self::node()[local-name() = 'p']">
-                    <xf:label>Texte</xf:label>
-                </xf:textarea>
-                <xf:group
-                    ref="self::node()[local-name() = 'listEntry']">
-                    <xf:label>Liste</xf:label>
-                    <xf:input
-                        ref="alm:head">
-                        <xf:label>Intitulé</xf:label>
+            <xf:textarea ref="tei:p">
+                <xf:label>Texte</xf:label>
+            </xf:textarea>
+            <xf:repeat id="repeatList" nodeset="tei:list">
+                <xf:label>Liste</xf:label>
+                <xf:input ref="tei:head">
+                    <xf:label>Titre de la liste</xf:label>
+                </xf:input>
+                <xf:repeat id="repeatItem" nodeset="tei:item">
+                    <xf:label>Entrée</xf:label>
+                    <xf:input ref="tei:date/@when">
+                        <xf:label>Date</xf:label>
                     </xf:input>
-                    <xf:repeat
-                        id="reapeatEntry"
-                        nodeset="alm:entry">
-                        <xf:label>Entrée</xf:label>
-                        <xf:input
-                            ref="alm:name">
-                            <xf:label>Nom</xf:label>
-                        </xf:input>
-                        <xf:input
-                            ref="alm:address">
-                            <xf:label>Adresse</xf:label>
-                        </xf:input>
-                        <xf:input
-                                ref="alm:status">
-                            <xf:label>État</xf:label>
-                        </xf:input>
-                        <xf:select1
-                            ref="@href">
-                            <xf:label>Entrée liée</xf:label>
-                            <xf:itemset
-                                nodeset="instance('xprEntities')/xpr:entity[@type = 'expert']">
-                                <xf:label
-                                    ref="xpr:label"/>
-                                <xf:value
-                                    ref="@xml:id"/>
-                            </xf:itemset>
-                        </xf:select1>
-                        <xf:trigger
-                            class="delete">
-                            <xf:label>Supprimer cette entrée</xf:label>
-                            <xf:delete
-                                nodeset="."
-                                if="count(parent::alm:listEntry/alm:entry) &gt; 1"
-                                ev:event="DOMActivate"/>
-                            <xf:help>Supprime une entrée</xf:help>
-                        </xf:trigger>
-                    </xf:repeat>
-                    <xf:trigger>
-                        <xf:label>Ajouter une entrée</xf:label>
-                        <xf:insert
-                                context="."
-                                origin="instance('almanakCopy')/alm:content/alm:section/alm:listEntry/alm:entry"
-                                nodeset="*"
-                                at="index('repeatEntry')"
-                                position="after"
-                                ev:event="DOMActivate"/>
-                        <xf:help>Ajoute une entrée</xf:help>
+                    <xf:input ref="tei:persName">
+                        <xf:label>Nom</xf:label>
+                    </xf:input>
+                    <xf:select1 ref="tei:persName/@ref">
+                        <xf:label>Expert</xf:label>
+                        <xf:item>
+                            <xf:label/>
+                            <xf:value/>
+                        </xf:item>
+                        <xf:itemset nodeset="instance('xprEntities')/xpr:entity[@type = 'expert']">
+                            <xf:label ref="xpr:label"/>
+                            <xf:value value="concat('#', @xml:id)"/>
+                        </xf:itemset>
+                    </xf:select1>
+                    <xf:input ref="tei:seg[@type='address']">
+                        <xf:label>Adresse</xf:label>
+                    </xf:input>
+                    <xf:input ref="tei:seg[@type='status']">
+                        <xf:label>État</xf:label>
+                    </xf:input>
+                    <xf:trigger class="delete">
+                        <xf:label>Supprimer cette entrée</xf:label>
+                        <xf:delete nodeset="."
+                            if="count(parent::tei:list/tei:item) &gt; 1"
+                            ev:event="DOMActivate"/>
+                        <xf:help>Supprime une entrée</xf:help>
                     </xf:trigger>
-                </xf:group>
-                <xf:trigger
-                    class="delete">
-                    <xf:label>
-                        <xf:output
-                            value="choose(self::node()[local-name() = 'p'], 'Supprimer ce texte', 'Supprimer cette liste')"/>
-                    </xf:label>
-                    <xf:delete
-                        nodeset="."
+                </xf:repeat>
+                <xf:trigger>
+                    <xf:label>Ajouter une entrée</xf:label>
+                    <xf:insert context="."
+                        origin="instance('almanakCopy')/tei:text/tei:body/tei:div/tei:div[@type='section']/tei:list/tei:item[1]"
+                        nodeset="tei:item[index('repeatItem')]"
+                        position="after"
                         ev:event="DOMActivate"/>
+                    <xf:help>Ajoute une entrée</xf:help>
                 </xf:trigger>
             </xf:repeat>
             <xf:trigger>
-                <xf:label>Ajouter un texte</xf:label>
-                    <xf:insert
-                        context="."
-                        origin="instance('almanakCopy')/alm:content/alm:section/alm:p"
-                        nodeset="alm:p | alm:listEntry"
-                        at="index('repeatSectionContent')"
-                        position="after"
-                        ev:event="DOMActivate"/>
-                <xf:help>Ajoute un texte</xf:help>
-            </xf:trigger>
-            <xf:trigger>
                 <xf:label>Ajouter une liste</xf:label>
-                    <xf:insert
-                        context="."
-                        origin="instance('almanakCopy')/alm:content/alm:section/alm:listEntry"
-                        nodeset="alm:p | alm:listEntry"
-                        at="index('repeatSectionContent')"
-                        position="after"
-                        ev:event="DOMActivate"/>
-                
+                <xf:insert context="."
+                    origin="instance('almanakCopy')/tei:text/tei:body/tei:div/tei:div[@type='section']/tei:list"
+                    nodeset="tei:list"
+                    at="last()"
+                    position="after"
+                    ev:event="DOMActivate"/>
                 <xf:help>Ajoute une liste</xf:help>
             </xf:trigger>
-            <xf:trigger
-                class="delete">
+            <xf:trigger class="delete">
                 <xf:label>Supprimer cette section</xf:label>
-                <xf:delete
-                    nodeset="."
-                    if="count(parent::alm:content/alm:section) &gt; 1"
+                <xf:delete nodeset="."
+                    if="count(parent::tei:div) &gt; 1"
                     ev:event="DOMActivate"/>
                 <xf:help>Supprime une section</xf:help>
             </xf:trigger>
@@ -145,19 +152,16 @@
         <xf:trigger
             class="insert">
             <xf:label>Ajouter une section</xf:label>
-            
-                <xf:insert
-                    context="."
-                    origin="instance('almanakCopy')/alm:content/alm:section"
-                    nodeset="*"
-                    at="index('repeatSection')"
-                    position="after"
-                    ev:event="DOMActivate"/>
+            <xf:insert context="."
+                origin="instance('almanakCopy')/tei:text/tei:body/tei:div/tei:div[@type='section']"
+                nodeset="*"
+                at="index('repeatSection')"
+                position="after"
+                ev:event="DOMActivate"/>
             <xf:help>Ajoute une section</xf:help>
         </xf:trigger>
     </xf:group>
-    <xf:submit
-            submission="submitAlmanak">
+    <xf:submit submission="submitAlmanak">
         <xf:label>Enregistrer</xf:label>
     </xf:submit>
 </form>

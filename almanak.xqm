@@ -13,6 +13,7 @@ module namespace dir = "alm";
  : (at your option) any later version.
  :
  :)
+import module namespace Session = 'http://basex.org/modules/session';
 
 declare namespace rest = "http://exquery.org/ns/restxq";
 declare namespace file = "http://expath.org/ns/file";
@@ -20,14 +21,19 @@ declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace web = "http://basex.org/modules/web";
 declare namespace update = "http://basex.org/modules/update";
 declare namespace db = "http://basex.org/modules/db";
+declare namespace perm = "http://basex.org/modules/perm" ;
+declare namespace user = "http://basex.org/modules/user" ;
+declare namespace session = 'http://basex.org/modules/session' ;
+declare namespace http = "http://expath.org/ns/http-client" ;
 
-declare default element namespace "alm";
+declare default element namespace "http://www.tei-c.org/ns/1.0";
 declare default function namespace "alm";
 
 declare namespace xlink = "http://www.w3.org/1999/xlink" ;
 declare namespace ev = "http://www.w3.org/2001/xml-events" ;
 declare namespace xf = "http://www.w3.org/2002/xforms" ;
 declare namespace eac = "eac" ;
+declare namespace tei = "http://www.tei-c.org/ns/1.0";
 
 declare default collation "http://basex.org/collation?lang=fr";
 
@@ -42,47 +48,91 @@ declare
   %output:method("xml")
 function index() {
   if (db:exists("almanak"))
-    then web:redirect("/almanak/home") 
+    then web:redirect("/almanak/home")
     else web:redirect("/almanak/install") 
 };
 
 (:~
  : This resource function install
- : @return create the db
- :
- : @todo create the prosopo db
+ : @return create the almanak db db
  :)
 declare 
   %rest:path("/almanak/install")
   %output:method("xml")
+  %perm:allow("almanak")
   %updating
 function install() {
   if (db:exists("almanak")) 
     then (
-      update:output("La base 'almanak' existe déjà, voulez-vous l’écraser ?")
+      update:output("La base 'almanak' existe déjà")
      )
     else (
       update:output("La base a été créée"),
-      db:create( "almanak", <alm xmlns='alm'/>, "almanak.xml", map {"chop" : fn:false()} )
+      db:create(
+          'almanak',
+          '/Volumes/data/github/xprdata/almanak/almanak.xml',
+          'almanak.xml',
+          map{
+            'ftindex': fn:true(),
+            'stemming': fn:true(),
+            'casesens': fn:true(),
+            'diacritics': fn:true(),
+            'language': 'fr',
+            'updindex': fn:true(),
+            'autooptimize': fn:true(),
+            'maxlen': 96,
+            'maxcats': 100,
+            'splitsize': 0,
+            'chop': fn:false(),
+            'textindex': fn:true(),
+            'attrindex': fn:true(),
+            'tokenindex': fn:true(),
+            'xinclude': fn:true()
+          }
       )
+    )
 };
 
 (:~
  : This resource function defines the application home
  : @return redirect to the directories list
  :)
-declare 
-
-
+declare
   %rest:path("/almanak/home")
   %output:method("xml")
 function home() {
-  web:redirect("/almanak/list") 
+  web:redirect("/almanak/view")
 };
 
 (:~
  : This resource function lists all the almanachs
- : @return an ordered list of directories
+ : @return an ordered list of almanachs in html
+ :)
+declare
+%rest:path("/almanak/view")
+%rest:produces('application/xml')
+%output:method("html")
+function getAlmanakHtml() {
+  <html>
+    <head>
+      <title>xpr AlmanaK</title>
+      <meta charset="utf-8"/>
+    </head>
+    <body>
+      <div>
+        <h1>Liste des Almanachs</h1>
+        <ul>{
+          for $almanak in db:open('almanak')//TEI
+          return <li>{$almanak//titleStmt/title[1]=> fn:normalize-space()} : <a href="/almanak/{$almanak/@xml:id}/modify">voir</a></li>
+        }</ul>
+      </div>
+    </body>
+  </html>
+};
+
+(:~
+ : This resource function lists all the almanachs
+ : @return an ordered list of almanach in xml
  :)
 declare 
 %rest:path("/almanak/xml")
@@ -93,13 +143,13 @@ function list() {
 };
 
 (:~
- : This resource function edits a directory
- : @param a directory id
- : @return an xforms for the directory
+ : This resource function edits a new almanach
+ : @return an xforms for the almanach
 :)
 declare
   %rest:path("almanak/new")
   %output:method("xml")
+  %perm:allow("almanak")
 function new() {
   let $content := map {
     'instance' : '',
@@ -109,11 +159,117 @@ function new() {
   let $outputParam := map {
     'layout' : "template.xml"
   }
-  return
-    (processing-instruction xml-stylesheet { fn:concat("href='", $dir:xsltFormsPath, "'"), "type='text/xsl'"},
+  return(
+    processing-instruction xml-stylesheet { fn:concat("href='", $dir:xsltFormsPath, "'"), "type='text/xsl'"},
     <?css-conversion no?>,
     wrapper($content, $outputParam)
+  )
+};
+
+(:~
+ : This resource function returns an almanach item
+ : @param $id the almanach id
+ : @return an almanach item in xml
+ :)
+declare
+  %rest:path("almanak/{$id}")
+  %output:method("xml")
+function getAlmanak($id) {
+  db:open('almanak')//TEI[@xml:id=$id]
+};
+
+(:~
+ : This resource function returns an almanach item for an xforms instance
+ : @return an xml resources
+ :)
+declare
+  %rest:path("/almanak/xforms")
+  %rest:produces('application/xml')
+  %output:method("xml")
+function getDataFromXforms() {
+  let $id := request:parameter('data')
+  let $almanak := db:open('almanak')//TEI[@xml:id = $id]
+  return
+    copy $d := $almanak
+    modify (
+      delete node $d/@xml:id
     )
+    return $d
+};
+
+(:~
+ : This resource function edits an almanachs
+ : @param a directory id
+ : @return an xforms for the almanachs
+:)
+declare
+  %rest:path("almanak/{$id}/modify")
+  %output:method("xml")
+  %perm:allow("almanak")
+function modifyAlmanak($id) {
+  let $content := map {
+    'instance' : $id,
+    'path' : 'almanak',
+    'model' : 'almanak_model.xml',
+    'form' : 'almanak_form.xml'
+  }
+  let $outputParam := map {
+    'layout' : "template.xml"
+  }
+  return(
+    processing-instruction xml-stylesheet { fn:concat("href='", $dir:xsltFormsPath, "'"), "type='text/xsl'"},
+    <?css-conversion no?>,
+    wrapper($content, $outputParam)
+  )
+};
+
+(:~ Login page (visible to everyone). :)
+declare
+  %rest:path("almanak/login")
+  %output:method("html")
+function login() {
+  <html>
+    Please log in:
+    <form action="/almanak/login/check" method="post">
+      <input name="name"/>
+      <input type="password" name="pass"/>
+      <input type="submit"/>
+    </form>
+  </html>
+};
+
+declare
+  %rest:path("almanak/login/check")
+  %rest:query-param("name", "{$name}")
+  %rest:query-param("pass", "{$pass}")
+function login($name, $pass) {
+  try {
+    user:check($name, $pass),
+    Session:set('id', $name),
+    web:redirect("/almanak/view")
+  } catch user:* {
+    web:redirect("/")
+  }
+};
+
+(:~
+ : Permissions: almanch
+ : Checks if the current user is granted; if not, redirects to the login page.
+ : @param $perm map with permission data
+ :)
+declare
+    %perm:check('almanak', '{$perm}')
+function permAlmanak($perm) {
+  let $user := Session:get('id')
+  return
+    if((fn:empty($user) or fn:not(user:list-details($user)/*:info/*:grant/@type = $perm?allow)) and fn:ends-with($perm?path, 'new'))
+      then web:redirect('/almanak/login')
+    else if((fn:empty($user) or fn:not(user:list-details($user)/*:info/*:grant/@type = $perm?allow)) and fn:ends-with($perm?path, 'modify'))
+      then web:redirect('/almanak/login')
+    else if((fn:empty($user) or fn:not(user:list-details($user)/*:info/*:grant/@type = $perm?allow)) and fn:ends-with($perm?path, 'put'))
+      then web:redirect('/almanak/login')
+    else if((fn:empty($user) or fn:not(user:list-details($user)/*:info/*:grant/@type = $perm?allow)) and fn:ends-with($perm?path, 'install'))
+      then web:redirect('/almanak/login')
 };
 
 (:~
@@ -128,6 +284,7 @@ declare
   %output:method("xml")
   %rest:header-param("Referer", "{$referer}", "none")
   %rest:PUT("{$param}")
+  %perm:allow("expertises")
   %updating
 function putAlmanak($param, $referer) {
   let $db := db:open("almanak")
@@ -135,9 +292,8 @@ function putAlmanak($param, $referer) {
     if (fn:ends-with($referer, 'modify'))
     then
       let $location := fn:analyze-string($referer, 'almanak/(.+?)/modify')//fn:group[@nr='1']
-      let $id := fn:replace(fn:lower-case($param/almanak/header/unitid), '/', '-')
       return (
-        replace node $db/alm/almanak[@xml:id = $location] with $param,
+        replace node $db/teiCorpus/TEI[@xml:id = $location] with $param,
         update:output(
          (
           <rest:response>
@@ -147,7 +303,7 @@ function putAlmanak($param, $referer) {
             </http:response>
           </rest:response>,
           <result>
-            <id>{$id}</id>
+            <id>{$location}</id>
             <message>La ressource a été modifiée.</message>
             <url></url>
           </result>
@@ -155,7 +311,7 @@ function putAlmanak($param, $referer) {
         )
       )
     else
-      let $id := fn:replace(fn:lower-case($param/almanak/header/unitid), '/', '-')
+      let $id := fn:generate-id($param)
       let $param :=
         copy $d := $param
         modify (
@@ -163,7 +319,7 @@ function putAlmanak($param, $referer) {
         )
         return $d
       return (
-        insert node $param into $db/alm,
+        insert node $param after $db/teiCorpus/teiHeader,
         update:output(
          (
           <rest:response>
@@ -253,7 +409,7 @@ declare function getModels($content as map(*)){
     if ($instances[$i])
     then (
       copy $doc := fn:doc(file:base-dir() || "files/" || $model)
-      modify replace value of node $doc/xf:model/xf:instance[@id=fn:substring-before($model, 'Model.xml')]/@src with '/xpr/' || $path || '/' || $instances[$i]
+      modify replace value of node $doc/xf:model/xf:instance[@id=fn:substring-before($model, '_model.xml')]/@src with '/almanak/' || $instances[$i]
       return $doc
     )
     else

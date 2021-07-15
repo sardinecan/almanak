@@ -1,61 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<almanak
-    xmlns="alm"
-    xml:lang=""
-    href="">
-    <header>
-        <unitid/>
-        <docDate when=""/>
-        <filedesc>
-            <titlestmt>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
                 <title/>
-                <author/>
-            </titlestmt>
-            <editionstmt>
-                <edition/>
-            </editionstmt>
-            <publicationstmt>
-                <publisher/>
-                <date
-                    normal=""
-                    era="ce"
-                    calendar="gregorian"/>
-            </publicationstmt>
-            <seriesstmt>
-                <titleproper><!--Almanach royal ?--></titleproper>
-            </seriesstmt>
-        </filedesc>
-        <profiledesc>
-            <creation/>
-            <langusage>
-                <language
-                    langcode="fre"/>
-            </langusage>
-            <descrules/>
-        </profiledesc>
-        <revisiondesc>
+            </titleStmt>
+            <publicationStmt>
+                <p/>
+            </publicationStmt>
+            <sourceDesc>
+                <msDesc>
+                    <msIdentifier>
+                        <country/>
+                        <settlement/>
+                        <repository/>
+                        <idno/>
+                    </msIdentifier>
+                </msDesc>
+            </sourceDesc>
+        </fileDesc>
+        <revisionDesc>
             <change>
-                <date
-                    normal=""
-                    era="ce"
-                    calendar="gregorian"/>
-                <item/>
+                <persName/>
+                <p/>
             </change>
-        </revisiondesc>
-    </header>
-    <content>
-        <section>
-            <head/>
-            <p/>
-            <listEntry>
-                <head/>
-                <entry
-                    href="">
-                    <name/>
-                    <address/>
-                    <status/>
-                </entry>
-            </listEntry>
-        </section>
-    </content>
-</almanak>
+        </revisionDesc>
+    </teiHeader>
+    <facsimile>
+        <graphic url=""><desc/></graphic>
+    </facsimile>
+    <text>
+        <body>
+            <div xml:lang="fr">
+                <div type="section">
+                    <head/>
+                    <p/>
+                    <list>
+                        <head/>
+                        <item>
+                            <date when=""/>
+                            <persName ref=""/>
+                            <seg type="address"/>
+                            <seg type="status"/>
+                        </item>
+                        <item>
+                            <date when=""/>
+                            <persName ref=""/>
+                            <seg type="address"/>
+                            <seg type="status"/>
+                        </item>
+                        <item>
+                            <date when=""/>
+                            <persName ref=""/>
+                            <seg type="address"/>
+                            <seg type="status"/>
+                        </item>
+                        <item>
+                            <date when=""/>
+                            <persName ref=""/>
+                            <seg type="address"/>
+                            <seg type="status"/>
+                        </item>
+                        <item>
+                            <date when=""/>
+                            <persName ref=""/>
+                            <seg type="address"/>
+                            <seg type="status"/>
+                        </item>
+                        <item>
+                            <date when=""/>
+                            <persName ref=""/>
+                            <seg type="address"/>
+                            <seg type="status"/>
+                        </item>
+                        <item>
+                            <date when=""/>
+                            <persName ref=""/>
+                            <seg type="address"/>
+                            <seg type="status"/>
+                        </item>
+                        <item>
+                            <date when=""/>
+                            <persName ref=""/>
+                            <seg type="address"/>
+                            <seg type="status"/>
+                        </item>
+                        <item>
+                            <date when=""/>
+                            <persName ref=""/>
+                            <seg type="address"/>
+                            <seg type="status"/>
+                        </item>
+                        <item>
+                            <date when=""/>
+                            <persName ref=""/>
+                            <seg type="address"/>
+                            <seg type="status"/>
+                        </item>
+                    </list>
+                </div>
+            </div>
+        </body>
+    </text>
+</TEI>

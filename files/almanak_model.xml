@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--<xforms-model xf-id="almanakModel">
+    <xforms-instance xf-id="almanak" xf-src="/almanak/files/almanak_instance.xml"/>
+    <xforms-instance xf-id="almanakCopy" xf-src="/almanak/files/almanak_instance.xml"/>
+    <xforms-instance xf-id="xprEntities" xf-src="/xpr/entities"/>
+
+    <xforms-instance xf-id="itemNumber">
+        <script type="application/xml">
+            <data xmlns="">
+                <value/>
+            </data>
+        </script>
+    </xforms-instance>
+    <xforms-bind id="section" xf-nodeset="tei:text/tei:body/tei:div/tei:div"/>
+    <xforms-submission xf-mode="synchronous" xf-id="submitAlmanak" xf-resource="/almanak/put" xf-method="put" xf-replace="none">
+        <xforms-action xf-event="xforms-submit-done">
+            <xforms-message xf-level="modal">La ressource a été enregistrée ! Status : <xforms-output xf-value="event('response-status-code')"/> ; URI : <xforms-output xf-value="event('resource-uri')"/> ; Headers : <xforms-output xf-value="event('response-headers')"/> ; Reason : <xforms-output xf-value="event('response-reason-phrase')"/> ; Body : <xforms-output xf-value="event('response-body')"/>.</xforms-message>
+        </xforms-action>
+        <xforms-action xf-event="xforms-submit-error">
+            <xforms-message xf-level="modal">Une erreur est apparue : <xforms-output xf-value="event('error-type')"/> ; Status : <xforms-output xf-value="event('response-status-code')"/> ; URI : <xforms-output xf-value="event('resource-uri')"/> ; Headers : <xforms-output xf-value="event('response-headers')"/> ; Reason : <xforms-output xf-value="event('response-reason-phrase')"/> Body : <xforms-output xf-value="event('response-body')"/>.</xforms-message>
+        </xforms-action>
+    </xforms-submission>
+</xforms-model>-->
 <xf:model
     id="almanakModel"
     xmlns:xf="http://www.w3.org/2002/xforms"
@@ -12,35 +34,52 @@
     <xf:instance
         id="xprEntities"
         src="/xpr/entities"/>
-
-    <xf:bind nodeset="instance('almanak')/alm:header/alm:unitid" required="true()"/>
-    <xf:submission
-            mode="synchronous"
-            id="submitAlmanak"
-            resource="/almanak/put"
-            method="put"
-            replace="none">
-        <xf:action
-                ev:event="xforms-submit-done">
-            <xf:message
-                    level="modal">La ressource a été enregistrée ! Status : <xf:output
-                    value="event('response-status-code')"/> ; URI : <xf:output
-                    value="event('resource-uri')"/> ; Headers : <xf:output
-                    value="event('response-headers')"/> ; Reason : <xf:output
-                    value="event('response-reason-phrase')"/> ; Body : <xf:output
-                    value="event('response-body')"/>.</xf:message>
+    
+    <xf:instance
+        id="almanakList"
+        src="/almanak/xml"/>
+    
+    <xf:instance id="almanakGetData">
+        <data xmlns="xpr"/>
+    </xf:instance>
+    
+    
+    <xf:submission id="submitGetData"
+                   ref="instance('almanakGetData')"
+                   method="get"
+                   resource="/almanak/xforms"
+                   replace="instance"
+                   instance="almanak"/>
+    
+    <xf:instance id="itemNumber">
+        <data xmlns="">
+            <value/>
+        </data>
+    </xf:instance>
+    <xf:submission id="submitAlmanak"
+                   resource="/almanak/put"
+                   method="put"
+                   replace="none">
+        <xf:action ev:event="xforms-submit-done">
+            <xf:message level="modal">
+                La ressource a été enregistrée !
+                Status : <xf:output value="event('response-status-code')"/> ;
+                URI : <xf:output value="event('resource-uri')"/> ;
+                Headers : <xf:output value="event('response-headers')"/> ;
+                Reason : <xf:output value="event('response-reason-phrase')"/> ;
+                Body : <xf:output value="event('response-body')"/>.
+            </xf:message>
         </xf:action>
         <xf:action
                 ev:event="xforms-submit-error">
-            <xf:message
-                    level="modal">Une erreur est apparue : <xf:output
-                    value="event('error-type')"/> ; Status : <xf:output
-                    value="event('response-status-code')"/> ; URI : <xf:output
-                    value="event('resource-uri')"/> ; Headers : <xf:output
-                    value="event('response-headers')"/> ; Reason : <xf:output
-                    value="event('response-reason-phrase')"/> Body : <xf:output
-                    value="event('response-body')"/>.</xf:message>
+            <xf:message level="modal">
+                Une erreur est apparue : <xf:output value="event('error-type')"/> ;
+                Status : <xf:output value="event('response-status-code')"/> ;
+                URI : <xf:output value="event('resource-uri')"/> ;
+                Headers : <xf:output value="event('response-headers')"/> ;
+                Reason : <xf:output value="event('response-reason-phrase')"/>
+                Body : <xf:output value="event('response-body')"/>.
+            </xf:message>
         </xf:action>
     </xf:submission>
-
 </xf:model>
